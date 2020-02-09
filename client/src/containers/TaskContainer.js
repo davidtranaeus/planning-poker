@@ -3,12 +3,12 @@ import Task from '../components/Task'
 import { endRound } from '../actions'
 
 const mapStateToProps = state => ({
-  task: state.task.text,
-  finished: state.task.finished
+  task: state.task,
+  isFinished: state.user.isFinished
 })
 
 const mapDispatchToProps = dispatch => ({
-  endRound: () => dispatch(endRound())
+  endRound: isFinished => dispatch(endRound(isFinished))
 })
 
 export default connect(
