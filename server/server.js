@@ -22,23 +22,39 @@ io.on('connection', socket => {
 
   model.users.push({
     id: socket.id,
-    name: `User ${model.users.length + 1}`,
-    finished: false,
+    name: `User ${Math.floor(Math.random() * 1000)}`,
+    isFinished: false,
+    selectedCard: "None"
   })
   
-  socket.on('end round', () => {
+  socket.on('end round', data => {
     model.users = model.users.map(u => {
-      if (u.id === socket.id) u.finished = true;
+      if (u.id === socket.id) {
+        u.isFinished = data.isFinished;
+        u.selectedCard = data.selectedCard;
+      }
       return u
     })
-    
-    if (model.users.every(u => u.finished)) {
-      model.users.map(u => {
-        u.finished = false;
-        return u
+
+    console.log(model.users)
+
+    if (model.users.every(u => u.isFinished)) {
+
+      model.users = model.users.map(u => {
+        return {
+          ...u,
+          isFinished: false,
+          selectedCard: "None"
+        }
       })
+
       io.emit('new task', generateTask());
     }
+  })
+
+  socket.on('new round', data => {
+    
+
   })
 
   socket.on('disconnect', () => {

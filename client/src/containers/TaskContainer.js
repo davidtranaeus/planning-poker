@@ -4,11 +4,15 @@ import { endRound } from '../actions'
 
 const mapStateToProps = state => ({
   task: state.task,
-  isFinished: state.user.isFinished
+  isFinished: state.isFinished,
+  hasSelected: state.cards.find(c => c.selected)
 })
 
 const mapDispatchToProps = dispatch => ({
-  endRound: isFinished => dispatch(endRound(isFinished))
+  endRound: isFinished => {
+    console.log(isFinished)
+    dispatch(endRound(isFinished))
+  }
 })
 
 export default connect(

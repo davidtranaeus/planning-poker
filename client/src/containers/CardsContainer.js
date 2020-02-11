@@ -4,6 +4,7 @@ import { selectCard } from '../actions'
 
 const mapStateToProps = state => ({
   cards: state.cards,
+  isFinished: state.isFinished,
 })
 
 const mapDispatchToProps = dispatch => ({

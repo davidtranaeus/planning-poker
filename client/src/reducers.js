@@ -34,16 +34,12 @@ const cards = (state = defaultCards, action) => {
   }
 }
 
-const user = (state = { isFinished: false }, action) => {
+const isFinished = (state = false, action) => {
   switch (action.type) {
     case NEW_TASK:
-      return {
-        isFinished: false,
-      }
+      return false
     case END_ROUND:
-      return {
-        isFinished: action.isFinished,
-      };
+      return action.isFinished
     default:
       return state
   }
@@ -52,7 +48,7 @@ const user = (state = { isFinished: false }, action) => {
 const combinedReducers = combineReducers({
   task,
   cards,
-  user,
+  isFinished,
 })
 
 export default combinedReducers;

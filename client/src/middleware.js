@@ -18,7 +18,7 @@ export const socketMiddleware = url => {
       if (action.type === END_ROUND) {
         socket.emit('end round', {
           isFinished: action.isFinished,
-          selectedCard: store.getState().cards.find(c => c.selected).value
+          selectedCard: action.isFinished ? store.getState().cards.find(c => c.selected).value : "None"
         });
       }
       return next(action);
