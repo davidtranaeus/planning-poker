@@ -1,14 +1,10 @@
 import React from 'react';
 import './App.css';
-import CardsContainer from '../containers/CardsContainer'
-import TaskContainer from '../containers/TaskContainer'
+import RoomContainer from '../containers/RoomContainer';
 
 const App = () => {
   return (
-    <div className="app">
-      <TaskContainer />
-      <CardsContainer />
-    </div>
+    <RoomContainer />
   );
 }
 

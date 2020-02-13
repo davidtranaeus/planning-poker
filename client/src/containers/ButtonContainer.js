@@ -1,17 +1,17 @@
 import { connect } from 'react-redux'
-import Cards from '../components/Cards'
-import { selectCard } from '../actions'
+import Button from '../components/Button'
+import { endTask } from '../actions'
 
 const mapStateToProps = state => ({
-  cards: state.cards,
   isFinished: state.user.isFinished,
+  isDisabled: !state.cards.find(c => c.selected)
 })
 
 const mapDispatchToProps = dispatch => ({
-  selectCard: cardId => dispatch(selectCard(cardId))
+  finish: isFinished => dispatch(endTask(isFinished))
 })
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Cards)
+)(Button)

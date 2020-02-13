@@ -1,6 +1,7 @@
 import React from 'react';
 
 const Cards = ({ cards, selectCard, isFinished }) => {
+
   return <ul className="cards">
     {cards.map((card, listId) => {
       return <li 

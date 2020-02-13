@@ -14,52 +14,97 @@ const generateTask = () => {
 
 const model = {
   users: [],
-  task: "None"
+  results: []
+}
+
+const addUser = (users, id) => {
+  return [
+    ...users,
+    {
+      id: id,
+      name: `User ${Math.floor(Math.random() * 1000)}`,
+      isFinished: false,
+      selectedCard: "None",
+      finishedResults: false,
+    }
+  ]
+}
+
+const endUserRound = (users, id, data) => {
+  return users.map(user => {
+    if (user.id === id) {
+      return {
+        ...user,
+        isFinished: data.isFinished,
+        selectedCard: data.selectedCard
+      }
+    } else return user
+  })
+}
+
+const setResults = users => {
+  return users.map(user => {
+    return {
+      name: user.name,
+      selectedCard: user.selectedCard
+    }
+  })
+}
+
+const resetUsers = users => {
+  return users.map(user => {
+    return {
+      ...user,
+      isFinished: false,
+      selectedCard: "None"
+    }
+  })
+}
+
+const endUserResults = (users, id, data) => {
+  return users.map(user => {
+    if (user.id === id) {
+      return {
+        ...user,
+        finishedResults: data.isFinished
+      } 
+    } else return user
+  })
+}
+
+const resetResultsUsers = users => {
+  return users.map(user => {
+    return {
+      ...user,
+      finishedResults: false,
+    }
+  })
 }
 
 io.on('connection', socket => {
-  console.log('User connected')
-
-  model.users.push({
-    id: socket.id,
-    name: `User ${Math.floor(Math.random() * 1000)}`,
-    isFinished: false,
-    selectedCard: "None"
-  })
+  model.users = addUser(model.users, socket.id);
   
-  socket.on('end round', data => {
-    model.users = model.users.map(u => {
-      if (u.id === socket.id) {
-        u.isFinished = data.isFinished;
-        u.selectedCard = data.selectedCard;
-      }
-      return u
-    })
-
-    console.log(model.users)
+  socket.on('end task', data => {
+    model.users = endUserRound(model.users, socket.id, data)
 
     if (model.users.every(u => u.isFinished)) {
+      model.results = setResults(model.users)
+      model.users = resetUsers(model.users)
+      io.emit('results', model.results)
+    }
+  })
 
-      model.users = model.users.map(u => {
-        return {
-          ...u,
-          isFinished: false,
-          selectedCard: "None"
-        }
-      })
+  socket.on('end results', data => {
+    model.users = endUserResults(model.users, socket.id, data)
 
+    if (model.users.every(u => u.finishedResults)) {
+      model.users = resetResultsUsers(model.users)
       io.emit('new task', generateTask());
     }
   })
 
-  socket.on('new round', data => {
-    
-
-  })
-
   socket.on('disconnect', () => {
     model.users = model.users.filter(u => u.id !== socket.id)
-    console.log('User disconnected')
   })
 })
 

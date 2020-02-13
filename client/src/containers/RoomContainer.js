@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
-import Task from '../components/Task'
+import Room from '../components/Room'
 
 const mapStateToProps = state => ({
-  task: state.task,
+  currentView: state.view
 })
 
 export default connect(
   mapStateToProps
-)(Task)
+)(Room)

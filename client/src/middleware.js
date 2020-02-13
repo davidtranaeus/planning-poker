@@ -1,7 +1,5 @@
 import io from 'socket.io-client';
-import { END_ROUND, NEW_TASK } from './actions'
-
-// https://gist.github.com/markerikson/3df1cf5abbac57820a20059287b4be58
+import { END_TASK, RECEIVE_TASK, RECEIVE_RESULTS, END_RESULTS } from './actions'
 
 export const socketMiddleware = url => {
   return store => {
@@ -9,17 +7,30 @@ export const socketMiddleware = url => {
 
     socket.on('new task', task => {
       store.dispatch({
-        type: NEW_TASK,
-        payload: task
+        type: RECEIVE_TASK,
+        task
       });
     });
 
+    socket.on('results', results => {
+      store.dispatch({
+        type: RECEIVE_RESULTS,
+        results
+      })
+    })
+
     return next => action => {
-      if (action.type === END_ROUND) {
-        socket.emit('end round', {
+      if (action.type === END_TASK) {
+        socket.emit('end task', {
           isFinished: action.isFinished,
           selectedCard: action.isFinished ? store.getState().cards.find(c => c.selected).value : "None"
         });
+      }
+
+      if (action.type === END_RESULTS) {
+        socket.emit('end results', {
+          isFinished: action.isFinished
+        })
       }
       return next(action);
     }
