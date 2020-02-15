@@ -8,103 +8,56 @@ const server = http.createServer(app);
 
 const io = socketIO(server);
 
-const generateTask = () => {
-  return `Task: ${Math.random().toString(36).substring(7)}`
-}
-
-const model = {
-  users: [],
-  results: []
-}
-
-const addUser = (users, id) => {
-  return [
-    ...users,
-    {
-      id: id,
-      name: `User ${Math.floor(Math.random() * 1000)}`,
-      isFinished: false,
-      selectedCard: "None",
-      finishedResults: false,
-    }
-  ]
-}
-
-const endUserRound = (users, id, data) => {
-  return users.map(user => {
-    if (user.id === id) {
-      return {
-        ...user,
-        isFinished: data.isFinished,
-        selectedCard: data.selectedCard
-      }
-    } else return user
-  })
-}
-
-const setResults = users => {
-  return users.map(user => {
-    return {
-      name: user.name,
-      selectedCard: user.selectedCard
-    }
-  })
-}
-
-const resetUsers = users => {
-  return users.map(user => {
-    return {
-      ...user,
-      isFinished: false,
-      selectedCard: "None"
-    }
-  })
-}
-
-const endUserResults = (users, id, data) => {
-  return users.map(user => {
-    if (user.id === id) {
-      return {
-        ...user,
-        finishedResults: data.isFinished
-      } 
-    } else return user
-  })
-}
-
-const resetResultsUsers = users => {
-  return users.map(user => {
-    return {
-      ...user,
-      finishedResults: false,
-    }
-  })
-}
+const model = require('./model')
 
 io.on('connection', socket => {
-  model.users = addUser(model.users, socket.id);
+  model.addUser(socket.id);
+
+  if (model.getGameState() === 'STATE_TASK') {
+    io.to(socket.id).emit('new task', model.getTask());
+  } else {
+    io.to(socket.id).emit('results', model.getResults());
+  }
   
   socket.on('end task', data => {
-    model.users = endUserRound(model.users, socket.id, data)
+    model.userFinishedTask(socket.id, data.isFinished, data.selectedCard)
 
-    if (model.users.every(u => u.isFinished)) {
-      model.results = setResults(model.users)
-      model.users = resetUsers(model.users)
-      io.emit('results', model.results)
+    if (model.allUsersFinishedTask()) {
+      model.setResults()
+      model.resetUsers()
+      io.emit('results', model.getResults())
     }
   })
 
   socket.on('end results', data => {
-    model.users = endUserResults(model.users, socket.id, data)
+    model.endUserResults(socket.id, data.isFinished)
 
-    if (model.users.every(u => u.finishedResults)) {
-      model.users = resetResultsUsers(model.users)
-      io.emit('new task', generateTask());
+    if (model.allUsersFinishedResults()) {
+      model.resetResultsUsers()
+      model.setNextTask()
+      io.emit('new task', model.getTask());
     }
   })
 
   socket.on('disconnect', () => {
-    model.users = model.users.filter(u => u.id !== socket.id)
+    model.removeUser(socket.id)
+
+    // TODO städa upp
+    if (!model.roomIsEmpty()) {
+      if (model.getGameState() === 'STATE_TASK') {
+        if (model.allUsersFinishedTask()) {
+          model.setResults()
+          model.resetUsers()
+          io.emit('results', model.getResults())
+        }
+      } else {
+        if (model.allUsersFinishedResults()) {
+          model.resetResultsUsers()
+          model.setNextTask()
+          io.emit('new task', model.getTask());
+        }
+      }
+    }
   })
 })
 
