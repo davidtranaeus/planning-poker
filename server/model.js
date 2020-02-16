@@ -17,19 +17,19 @@ const setNextTask = () => {
   model.gameState = STATE_TASK;
 }
 
-const hasSubmittedTasks = () => {
+const hasTasks = () => {
   return model.tasks.length !== 0;
 }
 
-const roomIsEmpty = () => {
-  return model.users.length === 0;
+const hasUsers = () => {
+  return model.users.length !== 0;
 }
 
 const getGameState = () => {
   return model.gameState;
 }
 
-const getTask = () => {
+const getCurrentTask = () => {
   return model.tasks[0];
 }
 
@@ -46,7 +46,7 @@ const addUser = id => {
   ]
 }
 
-const userFinishedTask = (id, isFinished, selectedCard) => {
+const userEndedTask = (id, isFinished, selectedCard) => {
   model.users = model.users.map(user => {
     if (user.id === id) {
       return {
@@ -58,7 +58,7 @@ const userFinishedTask = (id, isFinished, selectedCard) => {
   })
 }
 
-const setResults = () => {
+const setFinalResults = () => {
   model.results = model.users.map(user => {
     return {
       name: user.name,
@@ -69,7 +69,7 @@ const setResults = () => {
   model.gameState = STATE_RESULTS;
 }
 
-const getResults = () => {
+const getFinalResults = () => {
   return model.results;
 }
 
@@ -78,12 +78,13 @@ const resetUsers = () => {
     return {
       ...user,
       isFinished: false,
-      selectedCard: "None"
+      selectedCard: "None",
+      finishedResults: false,
     }
   })
 }
 
-const endUserResults = (id, isFinished) => {
+const userEndedResults = (id, isFinished) => {
   model.users = model.users.map(user => {
     if (user.id === id) {
       return {
@@ -94,20 +95,11 @@ const endUserResults = (id, isFinished) => {
   })
 }
 
-const resetResultsUsers = () => {
-  model.users = model.users.map(user => {
-    return {
-      ...user,
-      finishedResults: false,
-    }
-  })
-}
-
-const allUsersFinishedTask = () => {
+const allUsersEndedTask = () => {
   return model.users.every(user => user.isFinished)
 }
 
-const allUsersFinishedResults = () => {
+const allUsersEndedResults = () => {
   return model.users.every(u => u.finishedResults)
 }
 
@@ -118,19 +110,18 @@ const removeUser = id => {
 module.exports = {
   addTask,
   setNextTask,
-  hasSubmittedTasks,
-  roomIsEmpty,
+  hasTasks,
+  hasUsers,
   getGameState,
   addUser,
-  userFinishedTask,
-  setResults,
-  getResults,
+  userEndedTask,
+  setFinalResults,
+  getFinalResults,
   resetUsers,
-  endUserResults,
-  resetResultsUsers,
+  userEndedResults,
   setNextTask,
-  getTask,
-  allUsersFinishedTask,
-  allUsersFinishedResults,
+  getCurrentTask,
+  allUsersEndedTask,
+  allUsersEndedResults,
   removeUser
 }

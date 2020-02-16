@@ -1,7 +1,6 @@
 import io from 'socket.io-client';
 import { END_TASK, 
   END_RESULTS,
-  noTasks,
   receiveResults,
   receiveTask,
   SUBMIT_TASK, } from './actions'
@@ -11,7 +10,7 @@ export const socketMiddleware = url => {
     const socket = io(url);
 
     socket.on('no tasks', () => {
-      store.dispatch(noTasks())
+      store.dispatch(receiveTask(false))
     })
 
     socket.on('new task', task => {

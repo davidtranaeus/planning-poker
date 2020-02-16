@@ -8,7 +8,6 @@ export const END_TASK = 'END_TASK'
 export const RECEIVE_TASK = 'RECEIVE_TASK'
 export const RECEIVE_RESULTS = 'SHOW_RESULTS'
 export const END_RESULTS = 'END_RESULTS'
-export const NO_TASKS = 'NO_TASKS'
 export const SUBMIT_TASK = 'SUBMIT_TASK'
 
 // Action creators
@@ -30,10 +29,6 @@ export const receiveResults = results => {
 
 export const endResults = isFinished => {
   return { type: END_RESULTS, isFinished}
-}
-
-export const noTasks = () => {
-  return { type: NO_TASKS }
 }
 
 export const submitTask = task => {

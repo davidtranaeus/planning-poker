@@ -14,33 +14,33 @@ io.on('connection', socket => {
   model.addUser(socket.id);
 
   if (model.getGameState() === 'STATE_TASK') {
-    if (model.hasSubmittedTasks()) {
-      io.to(socket.id).emit('new task', model.getTask());
+    if (model.hasTasks()) {
+      io.to(socket.id).emit('new task', model.getCurrentTask());
     } else {
       io.to(socket.id).emit('no tasks')
     }
   } else {
-    io.to(socket.id).emit('results', model.getResults());
+    io.to(socket.id).emit('results', model.getFinalResults());
   }
   
   socket.on('end task', data => {
-    model.userFinishedTask(socket.id, data.isFinished, data.selectedCard)
+    model.userEndedTask(socket.id, data.isFinished, data.selectedCard)
 
-    if (model.allUsersFinishedTask()) {
-      model.setResults()
+    if (model.allUsersEndedTask()) {
+      model.setFinalResults()
       model.resetUsers()
-      io.emit('results', model.getResults())
+      io.emit('results', model.getFinalResults())
     }
   })
 
   socket.on('end results', data => {
-    model.endUserResults(socket.id, data.isFinished)
+    model.userEndedResults(socket.id, data.isFinished)
 
-    if (model.allUsersFinishedResults()) {
-      model.resetResultsUsers()
+    if (model.allUsersEndedResults()) {
+      model.resetUsers()
       model.setNextTask()
-      if (model.hasSubmittedTasks()) {
-        io.emit('new task', model.getTask());
+      if (model.hasTasks()) {
+        io.emit('new task', model.getCurrentTask());
       } else {
         io.emit('no tasks');
       }
@@ -49,9 +49,9 @@ io.on('connection', socket => {
 
   socket.on('submit task', data => {
     console.log(data)
-    if (model.getGameState() === 'STATE_TASK' && !model.hasSubmittedTasks()) {
+    if (model.getGameState() === 'STATE_TASK' && !model.hasTasks()) {
       model.addTask(data.task)
-      io.emit('new task', model.getTask())
+      io.emit('new task', model.getCurrentTask())
     } else {
       model.addTask(data.task)
     }
@@ -61,18 +61,18 @@ io.on('connection', socket => {
     model.removeUser(socket.id)
 
     // TODO städa upp
-    if (!model.roomIsEmpty()) {
+    if (model.hasUsers()) {
       if (model.getGameState() === 'STATE_TASK') {
-        if (model.allUsersFinishedTask()) {
-          model.setResults()
+        if (model.allUsersEndedTask()) {
+          model.setFinalResults()
           model.resetUsers()
-          io.emit('results', model.getResults())
+          io.emit('results', model.getFinalResults())
         }
       } else {
-        if (model.allUsersFinishedResults()) {
-          model.resetResultsUsers()
+        if (model.allUsersEndedResults()) {
+          model.resetUsers()
           model.setNextTask()
-          io.emit('new task', model.getTask());
+          io.emit('new task', model.getCurrentTask());
         }
       }
     }
