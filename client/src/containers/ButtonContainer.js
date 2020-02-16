@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import Button from '../components/Button'
+import Button from '../components/Button/Button'
 import { endTask } from '../actions'
 
 const mapStateToProps = state => ({

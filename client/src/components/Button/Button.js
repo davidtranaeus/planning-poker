@@ -1,10 +1,10 @@
 import React from 'react';
+import './Button.css'
 
 const Button = ({ isFinished, isDisabled, finish }) => {
-  // Flytta upp hasSelected och döp om till typ isDisabled så button blir mer generell
   return (
     <button 
-      className={`${isFinished ? "selected" : ""}`} 
+      className={`${isFinished ? "button--pressed" : "button--unpressed"}`} 
       onClick={() => finish(!isFinished)}
       disabled={isDisabled}>
         {`${isFinished ? "Change vote" : "Finish"}`}

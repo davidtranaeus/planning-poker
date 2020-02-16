@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import Cards from '../components/Cards'
+import Cards from '../components/Cards/Cards'
 import { selectCard } from '../actions'
 
 const mapStateToProps = state => ({

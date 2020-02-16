@@ -1,9 +1,9 @@
 import React from 'react';
+import './Task.css'
 
 const Task = ({ task }) => {
-  return <div className="task">
-      <h1>{task}</h1>
-    </div>
+  return <div className="task">{task}</div>
+
 }
 
 export default Task;

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import Task from '../components/Task'
+import Task from '../components/Task/Task'
 
 const mapStateToProps = state => ({
   task: state.task,

@@ -1,0 +1,26 @@
+button {
+  width: 120px;
+  height: 60px;
+  border-radius: 8px;
+  border-width: 1px;
+  box-shadow: 0 5px #cecece;
+  color: white;
+  font-size: 1.1em;
+  outline: none;
+  border: none;
+}
+
+.button--unpressed {
+  background-color: #4CAF50;
+}
+
+.button--pressed {
+  background-color: orange;
+  box-shadow: 0 0px #a8a8a8;
+  transform: translateY(3px);
+}
+
+button:active {
+  box-shadow: 0 0px #a8a8a8;
+  transform: translateY(3px);
+}
