@@ -2,23 +2,20 @@ import React from 'react';
 import './Results.css'
 
 const Results = ({ results, task, endResults, hasEndedResults }) => {
-
   const groupedResults = results.reduce((groups, result) => {
-    if (groups.some(g => g.selectedCard === result.selectedCard)) {
-      return groups.map(g => {
-        if (g.selectedCard === result.selectedCard) {
-          return {
-            ...g,
-            voters: [...g.voters, result.name]
-          }
-        } else return g
-      })
+    const idx = groups.findIndex(g => g.selectedCard === result.selectedCard);
+    if (idx > -1) {
+      groups[idx].voters = [
+        ...groups[idx].voters, 
+        result.name
+      ]
     } else {
-      return [...groups, { 
+      groups = [...groups, { 
         selectedCard: result.selectedCard,
         voters: [result.name]
       }]
     }
+    return groups;
   }, [])
 
   const resultList = groupedResults.map((r, id) => {
