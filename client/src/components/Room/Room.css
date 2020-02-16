@@ -2,6 +2,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 700px;
+}
+
+.top-container {
+  display: flex;
+  flex-direction: column;
   justify-content: space-around;
-  height: 400px;
+  align-items: center;
+  height: 60%;
+  width: 100%;
+}
+
+
+form {
+  margin-top: auto;
 }

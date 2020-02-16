@@ -14,7 +14,11 @@ io.on('connection', socket => {
   model.addUser(socket.id);
 
   if (model.getGameState() === 'STATE_TASK') {
-    io.to(socket.id).emit('new task', model.getTask());
+    if (model.hasSubmittedTasks()) {
+      io.to(socket.id).emit('new task', model.getTask());
+    } else {
+      io.to(socket.id).emit('no tasks')
+    }
   } else {
     io.to(socket.id).emit('results', model.getResults());
   }
@@ -35,7 +39,21 @@ io.on('connection', socket => {
     if (model.allUsersFinishedResults()) {
       model.resetResultsUsers()
       model.setNextTask()
-      io.emit('new task', model.getTask());
+      if (model.hasSubmittedTasks()) {
+        io.emit('new task', model.getTask());
+      } else {
+        io.emit('no tasks');
+      }
+    }
+  })
+
+  socket.on('submit task', data => {
+    console.log(data)
+    if (model.getGameState() === 'STATE_TASK' && !model.hasSubmittedTasks()) {
+      model.addTask(data.task)
+      io.emit('new task', model.getTask())
+    } else {
+      model.addTask(data.task)
     }
   })
 

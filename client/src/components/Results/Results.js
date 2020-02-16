@@ -27,7 +27,7 @@ const Results = ({ results, task, endResults, hasEndedResults }) => {
   })
 
   return (
-    <div className="results">
+    <>
       <div className="task">
         Results: {task}
       </div>
@@ -37,7 +37,7 @@ const Results = ({ results, task, endResults, hasEndedResults }) => {
         onClick={() => endResults(!hasEndedResults)}>
           {`${hasEndedResults ? "Waiting for other players" : "Next task"}`}
       </button>
-    </div>
+    </>
   )
 }
 

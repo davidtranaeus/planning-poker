@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
+import { reducer as formReducer } from 'redux-form'
 import { SELECT_CARD, END_TASK, RECEIVE_TASK,
   RECEIVE_RESULTS, GAME_VIEW, RESULTS_VIEW, 
-  END_RESULTS } from './actions'
+  END_RESULTS, NO_TASKS} from './actions'
 
 const values = ["0", "1/2", "1", "2", "3", "5", "8", "13"];
 const defaultCards = values.map((v, id) => ({ id: id, value: v, selected: false }))
@@ -10,6 +11,8 @@ const task = (state = "None", action) => {
   switch (action.type) {
     case RECEIVE_TASK:
       return action.task
+    case NO_TASKS:
+      return false;
     default:
       return state;
   }
@@ -24,6 +27,7 @@ const cards = (state = defaultCards, action) => {
           selected: c.id === action.cardId ? !c.selected : false,
         }
       })
+    case NO_TASKS:
     case RECEIVE_TASK:
       return state.map(c => {
         return {
@@ -40,8 +44,9 @@ const user = (state = { isFinished: false }, action) => {
   switch (action.type) {
     case END_TASK:
     case END_RESULTS:
-        return { isFinished: action.isFinished }
-    case RECEIVE_TASK:
+      return { isFinished: action.isFinished }
+    case NO_TASKS:
+    case RECEIVE_TASK: // Todo, slå ihop RECEIVE_TASK och NO_TASKS till samma
     case RECEIVE_RESULTS:
       return { isFinished: false }
     default:
@@ -60,6 +65,7 @@ const results = (state = [], action) => {
 
 const view = (state = GAME_VIEW, action) => {
   switch (action.type) {
+    case NO_TASKS:
     case RECEIVE_TASK:
       return GAME_VIEW
     case RECEIVE_RESULTS:
@@ -74,7 +80,8 @@ const combinedReducers = combineReducers({
   cards,
   user,
   results,
-  view
+  view,
+  form: formReducer
 })
 
 export default combinedReducers;

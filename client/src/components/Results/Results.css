@@ -1,12 +1,4 @@
-.results {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  height: 400px;
-}
-
-.results ul {
+ul {
   list-style-type: none;
   padding: 0;
   margin: 0px 0px;
@@ -16,7 +8,7 @@
   flex-wrap: wrap;
 }
 
-.results li {
+li {
   font-size: 1.2em;
 }
 

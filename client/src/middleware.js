@@ -1,25 +1,36 @@
 import io from 'socket.io-client';
-import { END_TASK, RECEIVE_TASK, RECEIVE_RESULTS, END_RESULTS } from './actions'
+import { END_TASK, 
+  END_RESULTS,
+  noTasks,
+  receiveResults,
+  receiveTask,
+  SUBMIT_TASK, } from './actions'
 
 export const socketMiddleware = url => {
   return store => {
     const socket = io(url);
 
+    socket.on('no tasks', () => {
+      store.dispatch(noTasks())
+    })
+
     socket.on('new task', task => {
-      store.dispatch({
-        type: RECEIVE_TASK,
-        task
-      });
+      console.log(task)
+      store.dispatch(receiveTask(task))
     });
 
     socket.on('results', results => {
-      store.dispatch({
-        type: RECEIVE_RESULTS,
-        results
-      })
+      store.dispatch(receiveResults(results))
     })
 
     return next => action => {
+      
+      if (action.type === SUBMIT_TASK) {
+        socket.emit('submit task', {
+          task: action.task
+        })
+      }
+
       if (action.type === END_TASK) {
         socket.emit('end task', {
           isFinished: action.isFinished,

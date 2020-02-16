@@ -2,10 +2,23 @@ const STATE_TASK = "STATE_TASK";
 const STATE_RESULTS = "STATE_RESULTS"
 
 const model = {
-  task: `Task: ${Math.random().toString(36).substring(7)}`,
+  tasks: [],
   users: [],
   results: [],
   gameState: STATE_TASK,
+}
+
+const addTask = task => {
+  model.tasks = [...model.tasks, task]
+}
+
+const setNextTask = () => {
+  model.tasks = [...model.tasks.slice(1)];
+  model.gameState = STATE_TASK;
+}
+
+const hasSubmittedTasks = () => {
+  return model.tasks.length !== 0;
 }
 
 const roomIsEmpty = () => {
@@ -16,13 +29,8 @@ const getGameState = () => {
   return model.gameState;
 }
 
-const setNextTask = () => {
-  model.task = `Task: ${Math.random().toString(36).substring(7)}`
-  model.gameState = STATE_TASK;
-}
-
 const getTask = () => {
-  return model.task;
+  return model.tasks[0];
 }
 
 const addUser = id => {
@@ -108,6 +116,9 @@ const removeUser = id => {
 }
 
 module.exports = {
+  addTask,
+  setNextTask,
+  hasSubmittedTasks,
   roomIsEmpty,
   getGameState,
   addUser,

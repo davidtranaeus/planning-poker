@@ -5,18 +5,34 @@ import TaskContainer from '../../containers/TaskContainer';
 import ButtonContainer from '../../containers/ButtonContainer';
 import { GAME_VIEW } from '../../actions'
 import ResultsContainer from '../../containers/ResultsContainer';
+import TaskForm from '../TaskForm/TaskForm';
 
-const Button = ({ currentView }) => {
+const Room = ({ currentView, taskExists, submitTask }) => {
 
-  const view = currentView === GAME_VIEW
-    ? (<div className="room">
+  let view;
+
+  if (currentView === GAME_VIEW) {
+    if (taskExists) {
+      view = <>
         <TaskContainer />
         <CardsContainer />
         <ButtonContainer />
-      </div>)
-    : <ResultsContainer />
+      </>
+    } else {
+      view = "Please submit a task"
+    }
+  } else {
+    view = <ResultsContainer />
+  }
 
-  return view
+  return (
+    <div className="room">
+      <div className="top-container">
+        {view}
+      </div>
+      <TaskForm onSubmit={submitTask}/>
+    </div>
+  )
 }
 
-export default Button;
+export default Room;
