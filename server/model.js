@@ -25,8 +25,8 @@ const hasUsers = () => {
   return model.users.length !== 0;
 }
 
-const getGameState = () => {
-  return model.gameState;
+const isInTaskState = () => {
+  return model.gameState === STATE_TASK;
 }
 
 const getCurrentTask = () => {
@@ -97,7 +97,7 @@ module.exports = {
   setNextTask,
   hasTasks,
   hasUsers,
-  getGameState,
+  isInTaskState,
   addUser,
   setFinalResults,
   getFinalResults,

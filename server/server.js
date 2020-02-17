@@ -13,7 +13,7 @@ const model = require('./model')
 io.on('connection', socket => {
   model.addUser(socket.id);
 
-  if (model.getGameState() === 'STATE_TASK') {
+  if (model.isInTaskState()) {
     if (model.hasTasks()) {
       io.to(socket.id).emit('new task', model.getCurrentTask());
     } else {
@@ -48,7 +48,7 @@ io.on('connection', socket => {
   })
 
   socket.on('submit task', data => {
-    if (model.getGameState() === 'STATE_TASK' && !model.hasTasks()) {
+    if (model.isInTaskState() && !model.hasTasks()) {
       model.addTask(data.task)
       io.emit('new task', model.getCurrentTask())
     } else {
@@ -61,7 +61,7 @@ io.on('connection', socket => {
 
     // TODO städa upp
     if (model.hasUsers()) {
-      if (model.getGameState() === 'STATE_TASK') {
+      if (model.isInTaskState()) {
         if (model.allUsersFinished()) {
           model.setFinalResults()
           model.resetUsers()
