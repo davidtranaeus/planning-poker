@@ -24,9 +24,9 @@ io.on('connection', socket => {
   }
   
   socket.on('end task', data => {
-    model.userEndedTask(socket.id, data.isFinished, data.selectedCard)
+    model.updateUser(socket.id, data)
 
-    if (model.allUsersEndedTask()) {
+    if (model.allUsersFinished()) {
       model.setFinalResults()
       model.resetUsers()
       io.emit('results', model.getFinalResults())
@@ -34,9 +34,9 @@ io.on('connection', socket => {
   })
 
   socket.on('end results', data => {
-    model.userEndedResults(socket.id, data.isFinished)
+    model.updateUser(socket.id, data)
 
-    if (model.allUsersEndedResults()) {
+    if (model.allUsersFinished()) {
       model.resetUsers()
       model.setNextTask()
       if (model.hasTasks()) {
@@ -48,7 +48,6 @@ io.on('connection', socket => {
   })
 
   socket.on('submit task', data => {
-    console.log(data)
     if (model.getGameState() === 'STATE_TASK' && !model.hasTasks()) {
       model.addTask(data.task)
       io.emit('new task', model.getCurrentTask())
@@ -63,13 +62,13 @@ io.on('connection', socket => {
     // TODO städa upp
     if (model.hasUsers()) {
       if (model.getGameState() === 'STATE_TASK') {
-        if (model.allUsersEndedTask()) {
+        if (model.allUsersFinished()) {
           model.setFinalResults()
           model.resetUsers()
           io.emit('results', model.getFinalResults())
         }
       } else {
-        if (model.allUsersEndedResults()) {
+        if (model.allUsersFinished()) {
           model.resetUsers()
           model.setNextTask()
           io.emit('new task', model.getCurrentTask());

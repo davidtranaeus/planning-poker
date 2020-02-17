@@ -46,16 +46,19 @@ const addUser = id => {
   ]
 }
 
-const userEndedTask = (id, isFinished, selectedCard) => {
+const updateUser = (id, update) => {
   model.users = model.users.map(user => {
     if (user.id === id) {
       return {
         ...user,
-        isFinished: isFinished,
-        selectedCard: selectedCard
-      }
+        ...update
+      } 
     } else return user
   })
+}
+
+const allUsersFinished = () => {
+  return model.users.every(user => user.isFinished)
 }
 
 const setFinalResults = () => {
@@ -78,29 +81,9 @@ const resetUsers = () => {
     return {
       ...user,
       isFinished: false,
-      selectedCard: "None",
-      finishedResults: false,
+      selectedCard: "None"
     }
   })
-}
-
-const userEndedResults = (id, isFinished) => {
-  model.users = model.users.map(user => {
-    if (user.id === id) {
-      return {
-        ...user,
-        finishedResults: isFinished
-      } 
-    } else return user
-  })
-}
-
-const allUsersEndedTask = () => {
-  return model.users.every(user => user.isFinished)
-}
-
-const allUsersEndedResults = () => {
-  return model.users.every(u => u.finishedResults)
 }
 
 const removeUser = id => {
@@ -108,20 +91,18 @@ const removeUser = id => {
 }
 
 module.exports = {
+  updateUser,
+  allUsersFinished,
   addTask,
   setNextTask,
   hasTasks,
   hasUsers,
   getGameState,
   addUser,
-  userEndedTask,
   setFinalResults,
   getFinalResults,
   resetUsers,
-  userEndedResults,
   setNextTask,
   getCurrentTask,
-  allUsersEndedTask,
-  allUsersEndedResults,
   removeUser
 }
